@@ -38,6 +38,11 @@ import { EmployeesService } from './service/employees.service';
 import { WorkflowtemplateService } from './service/workflow-template.service';
 import { WorkflowTaskService } from './service/workflowTasks.service';
 import { WorkflowHistoryComponent } from './workflow-history/workflow-history.component';
+import { HrLeaveRequestComponent } from './hr-leave-request/hr-leave-request.component';
+import { LeaveService } from './service/leave.service';
+import { LeaveRequestService } from './service/leaveRequest.service';
+import { PermissionManagerService } from './service/permissionmanager.service';
+import { LeaveTransactionsService } from './service/leaveTransactions.service';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -51,7 +56,8 @@ export function createTranslateLoader(http: HttpClient) {
     FileUploaderButtonComponent,
     ExtendedPropertiesSectionComponent,
     ExtendedPropertyValueSelectorComponent,
-    WorkflowHistoryComponent
+    WorkflowHistoryComponent,
+    HrLeaveRequestComponent
   ],
   imports: [
     // BrowserModule,
@@ -79,13 +85,13 @@ export function createTranslateLoader(http: HttpClient) {
     }),
     RouterModule.forChild([
       {
-        path: '**', component: LeaveRequestComponent,
-        data: { breadcrumb: 'Leave Request' },
+        path: '**', component: HrLeaveRequestComponent,
+        data: { breadcrumb: 'Leave Requests' },
       }
     ])
   ],
   exports: [AppComponent,
-    LeaveRequestComponent],
+    HrLeaveRequestComponent],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptorService, multi: true },
     HttpClient,
@@ -101,6 +107,10 @@ export function createTranslateLoader(http: HttpClient) {
     EmployeesService,
     EmployeeLookupService,
     DepartmentService,
+    LeaveService,
+    LeaveRequestService,
+    PermissionManagerService,
+    LeaveTransactionsService,
     ChildrenOutletContexts
   ],
 

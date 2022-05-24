@@ -18,8 +18,9 @@ import { CommonMessages } from '../helpers/common.messages';
 import { notificationTypeEnums } from '../helpers/enum.helper';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { FileUploaderButtonComponent } from '../helpers/file-uploader-button/file-uploader-button.component';
 import { NotificationService } from '../service/notification.service';
+import { LeaveService } from '../service/leave.service';
+import { FileUploaderButtonComponent } from '../helpers/file-uploader-button/file-uploader-button.component';
 
 
 @Component({
@@ -98,6 +99,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 		public _UtilityService: UtilityService,
 		private _ActivatedRoute: ActivatedRoute,
 		private _LeaveRequestService: LeaveRequestService,
+		private _LeaveService: LeaveService,
 		protected _ConfigurationService: ConfigurationService,
 		protected _EmployeeLookupService: EmployeeLookupService,
 		protected _WorkflowtemplateService: WorkflowtemplateService,
@@ -107,7 +109,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 	) {
 
 
-		super(datePipe, _LeaveRequestService, _ConfigurationService, _EmployeeLookupService,
+		super(datePipe, _LeaveService, _ConfigurationService, _EmployeeLookupService,
 			_WorkflowtemplateService);
 
 		translate.setDefaultLang('en');

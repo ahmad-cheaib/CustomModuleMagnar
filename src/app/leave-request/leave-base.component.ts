@@ -6,10 +6,11 @@ import { ConfigurationService } from "../service/configuration.service";
 import { EmployeeLookupService } from "../service/employee-lookup.service";
 import { WorkflowtemplateService } from "../service/workflow-template.service";
 import { LeaveRequestService } from "../service/leaveRequest.service";
+import { LeaveService } from "../service/leave.service";
 
 export class LeaveBaseComponent implements OnDestroy {
 	employees: any[];
-	companyId: number;
+	companyId: number = 1;
 	employeeId: string;
 	organizationId: string;
 	workflowStatuses: any[];
@@ -19,7 +20,7 @@ export class LeaveBaseComponent implements OnDestroy {
 
 	constructor(
 		protected datePipe: DatePipe,
-		protected _leaveRequestService: LeaveRequestService,
+		protected _leaveService: LeaveService,
 		protected _ConfigurationService: ConfigurationService,
 		protected _EmployeeLookupService: EmployeeLookupService,
 		protected _WorkflowtemplateService: WorkflowtemplateService) {
@@ -48,7 +49,7 @@ export class LeaveBaseComponent implements OnDestroy {
 
 	getLeaves() {
 		
-		return this._leaveRequestService.GetLeaves()
+		return this._leaveService.GetLeaves(this.companyId)
 			.pipe(
 				takeWhile(() => !this.isDestroyed),
 				filter(response => !isNullOrUndefined(response)),

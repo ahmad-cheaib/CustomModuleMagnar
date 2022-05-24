@@ -1,0 +1,193 @@
+<section class="leavereaquest content registration-form section section-bottom bg-white">
+  <div class="row" >
+    <div class="col-md-12">
+      <div class="middle-part">
+
+        <div class="form-group marg-top-start-section">
+          <div class="add-form">
+
+
+            <div class="box-body">
+              <div class="form-group form-group-new abppraisal">
+
+
+                <div class="leavesearchbtn">
+                  <a class="applybtn fa-pull-left ytem" (click)="onAdd()"><i
+                      class="fa fa-plus"></i>{{'common.New' |
+                    translate}}
+                  </a>
+                  <div class="requestsearchbox fa-pull-left input-group ytem ytem2 last">
+
+
+                    <div class="search-appraisal">{{(searchModel ? searchModel : 'common.Search' | translate) }}</div> 
+
+                    <div class="container">
+                      <input class="" [(ngModel)]="searchModel" type="text" pInputText size="50" 
+                        placeholder="{{'common.Search' | translate }}"
+                        (input)="dt1.filterGlobal($event.target.value, 'contains')">
+                      <div class="fa fa-search search_icon"></div>
+                    </div>
+
+                  </div>
+
+                  <div class='managepermissions'>
+
+                    <div class="dropdown dropdownMenuButton_h">
+                      <button class="dropdown-toggle threepointdroph" type="button" id="dropdownMenuButtonh"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fa fa-circle leftcircle"></i>
+                        <i class="fa fa-circle leftcircle"></i>
+                        <i class="fa fa-circle leftcircle"></i>
+                      </button>
+                      <div class="dropdown-menu " aria-labelledby="dropdownMenuButtonh" style="margin: 0px;">
+                        <ng-container>
+                          <a class="dropdown-item" (click)='onManagePermissionsClick()'>{{'mainlayout.ManagePermissions'
+                            | translate}}</a>
+                        </ng-container>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              <div>
+                <div>
+
+                  <p-table responsiveLayout="scroll"   #dt1 [columns]="cols" [value]='leaveRequests' [loading]="loading"
+                    [globalFilterFields]="['daysCount', 'leaveName', 'statusName', 'remarks']" [paginator]='true'
+                    [rows]='10' [rowsPerPageOptions]='[10,20,30,50]'>
+                    <ng-template pTemplate="header">
+                      <tr>
+                        <th class="responsivetable" class="first class-id">
+                          #
+                        </th>
+                        <th class="responsivetable" [pSortableColumn]="'fromDate'" >
+                          {{'Period.FromDate' | translate}}
+                          <p-sortIcon [field]="'fromDate'"></p-sortIcon>
+                        </th>
+                        <th class="responsivetable" [pSortableColumn]="'toDate'" >
+                          {{'Period.ToDate' | translate}}
+                          <p-sortIcon [field]="'toDate'"></p-sortIcon>
+                        </th>
+                        <th class="responsivetable" [pSortableColumn]="'daysCount'" >
+                          {{'LeaveTransactions.DaysNumber' | translate}}
+                          <p-sortIcon [field]="'daysCount'"></p-sortIcon>
+                        </th>
+                        <th class="responsivetable" [pSortableColumn]="'hours'" >
+                          {{'LeaveTransactions.Hours' | translate}}
+                          <p-sortIcon [field]="'hours'"></p-sortIcon>
+                        </th>
+                        <th class="responsivetable" [pSortableColumn]="'leaveName'" >
+                          {{'processsetup.Leaves' | translate}}
+                          <p-sortIcon [field]="'leaveName'"></p-sortIcon>
+                        </th>
+                        <th class="responsivetable" [pSortableColumn]="'statusName'" >
+                          {{'Status' | translate}}
+                          <p-sortIcon [field]="'statusName'"></p-sortIcon>
+                        </th>
+      
+                        <th class="responsivetable" class="fixedColumn"> {{'ExpenseRequest.Attachment' | translate}}</th>
+
+                        <th class="responsivetable" class="fixedColumn" style="text-align: center;">
+                       
+                        </th>
+                      </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-rowData let-index='rowIndex'>
+
+                      <tr [pSelectableRow]="rowData" class="old">
+                        <td class="first">
+                          {{index+1}}
+                    </td>
+                    <td>
+                      {{ rowData.fromDate | date }}
+                    </td>
+                    <td>
+                      {{ rowData.toDate | date }}
+                    </td>
+                    <td>
+                      {{rowData.daysCount}}
+                    </td>
+                    <td>
+                      {{rowData.hours}}
+                    </td>
+                    <td>
+                      {{rowData.leaveName}}
+                    </td>
+                    <td>
+                      {{rowData.statusName}}
+                    </td>
+
+                    <td>
+                      <a (click)='onAttachmentClick(rowData)'
+                        *ngIf="rowData.attachmentType != undefined && rowData.fileName" style="cursor: pointer;">
+                        <span class='fa fa-paperclip' aria-hidden='true'></span>
+                      </a>
+                    </td>
+
+                    <td style="text-align:left;position: relative !important;vertical-align: top;">
+                      <div class="btn-group dropend dropdownvertical"
+                       style="position: relative !important; ">
+                        
+                        <div class="dropdown-toggle vericalhh"
+                        data-bs-toggle="dropdown" >
+                        <div class=verticalcircle>
+                        <i class="fa fa-circle" ></i>
+                      </div> 
+                      <div class=verticalcircle>
+                        <i class="fa fa-circle" ></i>
+                      </div> 
+                      <div class=verticalcircle>
+                        <i class="fa fa-circle" ></i>
+                      </div> 
+                        </div> 
+                        <div class="dropdown-menu">
+                          <h6 class="dropdown-item dropdown-item1" (click)="onRowEdit(rowData)"><i
+                            class="fa fa-pencil"></i> {{'common.Edit' | translate}}</h6>
+                        <h6 *ngIf="rowData.id !== 0 && rowData.status == 1" class="dropdown-item dropdown-item2" (click)="_UtilityService.onRowDelete(rowData.id)">
+                          <i class="fa fa fa-trash"></i> {{'common.Remove' | translate}}
+                        </h6>
+                        </div>
+                    </div>                                     
+                    </td>
+                      </tr>
+
+
+
+
+                    </ng-template>
+                    <ng-template pTemplate="emptymessage">
+                      <tr>
+                        <td class="nodatayet" style="text-align: center;" [attr.colspan]="3">
+                          {{'common.NoRecordsFound'| translate}}
+                        </td>
+                      </tr>
+
+
+                    </ng-template>
+
+                  </p-table>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+ 
+</section>
+
+
+<!-- <app-confirmation [titleKey]="'common.ConfirmDelete'" [showDelete]="_UtilityService.showDeleteModel"
+  [messagekey]="'common.DeleteMessage'" (onConfirm)="onPopupDelete()"></app-confirmation> -->
