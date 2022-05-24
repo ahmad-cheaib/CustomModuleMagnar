@@ -20,6 +20,8 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { FileUploaderButtonComponent } from '../helpers/file-uploader-button/file-uploader-button.component';
 import { NotificationService } from '../service/notification.service';
+import { EmployeesService } from '../service/employees.service';
+import { ThrowStmt } from '@angular/compiler';
 
 
 @Component({
@@ -85,6 +87,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 		toDate: new FormControl()
 
 	})
+	activeEmployees: any;
 
 
 
@@ -103,7 +106,8 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 		protected _WorkflowtemplateService: WorkflowtemplateService,
 		private permissionManagerService: PermissionManagerService,
 		private _LeaveTransactionsService: LeaveTransactionsService,
-		private _NotificationService : NotificationService
+		private _NotificationService : NotificationService,
+		private _EmployeesService : EmployeesService
 	) {
 
 
@@ -116,6 +120,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 	ngOnInit() {
 
+		this.getActiveEmployees();
 
 		this.myGroup.get("fromDate").valueChanges.subscribe(selectedValue => {
 			this.leaveRequest.fromDate = selectedValue;
@@ -131,10 +136,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 		this.loading = true;
 		this._LoaderService.displayLoader(true);
-		this.companyId = 1;
-		this.organizationId = '1';
-		this.username = "fsleiman@areeba.com";
-		this.employeeId = `179`;
+		
 
 		this._ActivatedRoute.params
 			.pipe(
@@ -204,9 +206,10 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 				this.extendedProperties = !!res.extendedProperties ? JSON.parse(res.extendedProperties) : {};
 
+				this.employeeId = this.leaveRequest.employeeId;
+
 				this.myGroup.get("fromDate").setValue(this.leaveRequest.fromDate);
 				this.myGroup.get("toDate").setValue(this.leaveRequest.toDate);
-
 
 			})
 		)
@@ -483,7 +486,6 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 	getWorkingDays() {
 
 
-
 		if (!isNullOrUndefined(this.leaveRequest.fromDate) && !isNullOrUndefined(this.leaveRequest.toDate)) {
 			if (this.leaveRequest.fromDate > this.leaveRequest.toDate) {
 				this.leaveRequest.toDate = null;
@@ -724,6 +726,32 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 			this.isLoading = false;
 			this._NotificationService.warning(this._UtilityService.translate("TheFilesHaven'tBeenUploadedYet"));
 		}
+	}
+
+
+	
+	getActiveEmployees() {
+		this._EmployeesService
+			.getActiveEmployees(this.companyId)
+			.pipe(
+				filter(response => response !== null && response !== undefined),
+				tap(response => {
+					this.activeEmployees = response;
+					this.activeEmployees.map( e=> {
+						e.label = e.firstName + " " + (e.middleName ? e.middleName : "") + " " + e.lastName;
+						return e;
+					})
+				
+				})
+			)
+			.subscribe();
+	}
+
+
+	onSelectEmployee(employee) {
+		console.log(employee);
+		this.employeeId = employee.id;
+		this.leaveRequest.employeeId = this.employeeId;
 	}
 
 
