@@ -1,0 +1,1 @@
+{"code":"export class GlobalVariables {\r\n    constructor() {\r\n        this.tempDeleteId = 0;\r\n    }\r\n}\r\n//# sourceMappingURL=GlobalVariables.js.map","map":{"version":3,"file":"GlobalVariables.js","sourceRoot":"","sources":["../../src/app/models/GlobalVariables.ts"],"names":[],"mappings":"AAAA,MAAM,OAAO,eAAe;IAA5B;QACQ,iBAAY,GAAG,CAAC,CAAC;IACzB,CAAC;CAAA"}}

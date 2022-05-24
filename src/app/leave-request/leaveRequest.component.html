@@ -1,0 +1,188 @@
+<section class="content registration-form section section-bottom bg-white">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="middle-part">
+
+        <div class="form-group marg-top-start-section">
+          <form class="needs-validation">
+            <div class="add-form">
+
+
+              <div class="box-body">
+                <div class="form-group form-group-new">
+
+
+
+                  <div class="row">
+
+                    <div class="form-group col-md-5">
+                      <label class="form-label required">Leaves</label>
+
+                      <p-dropdown  [options]="leaves" id='leaves' name='leaves'
+                        [(ngModel)]='leaveRequest.leaveId' optionLabel="name" optionValue="id"
+                        (onChange)="getWorkingDays();validateRequestCreation(leaveRequest.leaveId)">
+                      </p-dropdown>
+
+
+                      <!-- <div class="select">
+                        <select #chosenLeave
+                          class='js-example-basic-single choices form-select form-control  drop-arrow' key='leaves'
+                          id='leaves' name='leaves' [(ngModel)]='leaveRequest.leaveId' required
+                          (change)="$event.stopImmediatePropagation();getWorkingDays();validateRequestCreation(leaveRequest.leaveId)">
+                          <option selected='selected' value="null">
+                            {{'LeaveTransactions.SelectLeave' | translate}}</option>
+                          <option *ngFor="let leave of leaves" [value]="leave.id">{{leave.name}}</option>
+                        </select>
+                      </div> -->
+
+                    </div>
+
+                    <div class="form-group col-md-5">
+                      <label class="form-label">Status</label>
+                      <div class="form-input">
+                        <input type='text' class='form-field form-control' name='status' required maxlength='100'
+                          [(ngModel)]='leaveRequest.statusName' #status='ngModel' [readonly]="true">
+                      </div>
+
+                    </div>
+
+                    <div class="form-group col-md-5">
+                      <label class="form-label required">FromDate</label>
+                      <div [formGroup]="myGroup">
+                        <p-calendar id='fromDate' name='fromDate' showIcon='true' required 
+                        formControlName="fromDate"  dateFormat='{{calendarDateFormat}}'
+                          [monthNavigator]="true" [yearNavigator]="true" yearRange="1950:2030"
+                          ></p-calendar>
+                      </div>
+
+                    </div>
+
+                    <div class="form-group col-md-5">
+                      <label class="form-label required">ToDate</label>
+                      <div [formGroup]="myGroup">
+                        <p-calendar id='toDate' name='toDate' showIcon='true' required 
+                        formControlName="toDate" dateFormat='{{calendarDateFormat}}' [monthNavigator]="true"
+                          [yearNavigator]="true" yearRange="1950:2030" ></p-calendar>
+                      </div>
+                    </div>
+
+                    <div class="form-group col-md-5">
+                      <label class="form-label">DaysNumber</label>
+                      <div class="form-input">
+                        <input type='number' class='form-field form-control' name='daysNumber' required maxlength='100'
+                          [(ngModel)]='leaveRequest.daysCount' #daysNumber='ngModel' [readonly]="true"
+                          [disabled]="true">
+                      </div>
+                    </div>
+
+
+                    <div class="form-group col-md-5">
+                      <label class="form-label">Hours</label>
+                      <div class="form-input">
+                        <input type='number' class='form-field form-control' name='hours' required maxlength='100'
+                          [disabled]="isHourDisabled" [(ngModel)]='leaveRequest.hours'
+                          (change)="getSelectedDayWorkingHours()">
+                      </div>
+                    </div>
+
+
+
+
+                    <div class="form-group col-md-5">
+                      <label class="form-label">SubmissionDate</label>
+                      <div class="form-input">
+                        <input class="form-field" readonly name="fullName" value="23-05-2022" />
+                      </div>
+                    </div>
+
+
+                    <div class="form-group col-md-5">
+                      <label class="form-label">OffCycle</label>
+
+                      <!-- <p-checkbox name="OffCycle" [disabled]="!isAnnual" [(ngModel)]="leaveRequest.offCycle"
+                        binary="true">
+                      </p-checkbox> -->
+                      <p-selectButton name="OffCycle" [disabled]="!isAnnual" [(ngModel)]="leaveRequest.offCycle"
+                        [options]="options">
+                      </p-selectButton>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                      <label class="form-label">Remarks</label>
+                      <div class="form-input">
+                        <p-editor name='remark' id="comment" type='text' [style]="{'height':'200px'}"
+                          [(ngModel)]='leaveRequest.remarks'></p-editor>
+                      </div>
+                    </div>
+
+                    <!-- <div class="col-md-12">
+                      <div class="form-box">
+                        <app-extended-properties-section entityName="LeaveRequests" sectionName="Common"
+                          [(ngModel)]="extendedProperties.common" name='extendedProperties'>
+                        </app-extended-properties-section>
+                      </div>
+                    </div>
+
+                    <div class="col-md-5">
+                      <div class="form-box">
+                        <app-file-uploader-button #fileUploader
+                          [acceptFileTypes]="'.jpg,.png,.doc,.docx,.xls,.xlsx,.zip,.pdf,.txt'">
+                        </app-file-uploader-button>
+
+                      </div>
+
+
+                      <div class="col-md-12" *ngIf=" leaveRequest.id > 0 && leaveRequest.fileName != null ">
+
+                        <span *ngIf="uploadedFiles.name" style="vertical-align:middle;margin-left:3px; "><a href="#"
+                            (click)="viewFileOnEdit($event)">{{uploadedFiles.name}}</a></span>
+                      </div>
+                    </div>
+
+                    <div class="clearfix"></div>
+                    <div *ngIf="leaveRequest.id != 0" class="middle-part nested-approvers-history">
+                      <app-workflow-history [instanceId]='leaveRequest.workflowInstanceId' [companyId]='companyId'>
+                      </app-workflow-history>
+                    </div> -->
+
+
+
+
+
+
+
+                  </div>
+
+
+
+                </div>
+
+
+              </div>
+              <div class="row pull-left" style="margin-bottom: 15px;">
+                <div class="col-md-12">
+                  <div class="container-login100-form-btn m-t-32 marg-top-15">
+                    <div style="margin-right: 5px;">
+                      <button *ngIf="leaveRequest.id === 0" type="submit" class="login100-form-btn"
+                        [disabled]="isLoading" [ngClass]="{'disable-loader': isLoading}" (click)='onSaveChanges()'>
+                      {{'common.Submit'|translate}}</button>
+                   
+                    </div>
+                    <span class="pull-right btn-space">&nbsp;</span>
+                    <button class="login100-form-btn" type="button"
+                      (click)='showHideLeaveRequestForm(false)'>.cancel</button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </form>
+
+        </div>
+
+      </div>
+    </div>
+
+
+  </div>
+</section>
