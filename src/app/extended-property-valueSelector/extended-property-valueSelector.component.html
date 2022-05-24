@@ -1,0 +1,23 @@
+<div [ngSwitch]="valueSelectorType">
+    <div *ngSwitchCase="'SingleLine'">
+        <input class="form-control" pInputText type="text" [formControl]="control">
+    </div>
+    <div *ngSwitchCase="'Number'">
+        <input class="form-control" pInputText type="number" [formControl]="control" />
+    </div>
+    <div *ngSwitchCase="'Choice'">
+        <p-dropdown [placeholder]="configDropdownPlaceHolder"  inputStyleClass="dropdownValueSelector" [options]="$any(choiceOptions|async)" [editable]="configEditable" [formControl]="control" [style]="{'width':'100%'}"></p-dropdown>
+    </div>
+    <div *ngSwitchCase="'DateTime'">
+        <p-calendar [style]="{'width':'100%'}" [showIcon]="true" [dateFormat]="'dd/mm/yy'" [showTime]="configIncludeTime" hourFormat="12" [formControl]="control"></p-calendar>
+    </div>
+    <div *ngSwitchCase="'MultiLine'">
+        <textarea class="form-control"  pInputTextarea rows=5 [formControl]="control"></textarea>
+    </div>
+    <div *ngSwitchCase="'Checkbox'">
+        <p-checkbox [binary]="true" [formControl]="control"></p-checkbox>
+    </div>
+    <div *ngSwitchDefault>
+        <input class="form-control" pInputText type="text" [formControl]="control" />
+    </div>
+</div>

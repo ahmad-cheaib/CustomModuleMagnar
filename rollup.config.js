@@ -25,7 +25,10 @@ export default [{
       'primeng/selectbutton',
       'primeng/checkbox',
       'primeng/editor',
-      'primeng/button'
+      'primeng/button',
+      'primeng/fileupload',
+      'primeng/panel',
+      'ngx-toastr'
       
     ]
   },
@@ -60,7 +63,10 @@ export default [{
     'primeng/selectbutton',
     'primeng/checkbox',
     'primeng/editor',
-    'primeng/button'
+    'primeng/button',
+    'primeng/fileupload',
+    'primeng/panel',
+    'ngx-toastr'
 
   ]
 }]

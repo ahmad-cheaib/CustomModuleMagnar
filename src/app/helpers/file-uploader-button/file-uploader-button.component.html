@@ -1,0 +1,32 @@
+<div class="all-attach-comp" style="display: flex; justify-content: start; flex-direction: row;">
+        
+<div>
+            <label class="form-label">{{'Attachment' |
+                translate}}</label>
+            
+
+                <p-fileUpload class="pfileatt-attach" #file id="file" name="file" mode="basic" [showUploadButton]="false" 
+                [showCancelButton]="false" (onSelect)="onSelectFile($event)" 
+                    [accept]="acceptFileTypes"
+                     chooseLabel="{{'plugin.choose' | translate}}">
+                </p-fileUpload>
+        <button class="pupload-attach p-button-custom btn btn-lg btn-primary btn-block btn-save" type="button"
+            [disabled]="isUploadDisabled "
+            (click)='upload()'><i class='fa fa-upload'></i>&nbsp;{{'Upload' | translate}}
+        </button> 
+                <button *ngIf="fileData && fileData.name && isUploading" (click)="onCancelUpload()" class="pcancel-attach p-button-custom btn btn-lg btn-primary btn-block btn-save">
+                    <i class="fa fa-close"></i>Cancel
+                </button>
+            </div>
+</div>
+
+<div> 
+    <div class="list-upload-file" *ngIf="fileName">
+        <img class="img-upload" src="assets/images/Iconionic-md-document.png">
+        <a class="list-title" (click)="fileClick()" style="overflow: hidden; width: 80%;">{{fileName}}</a>
+        <button   (click)="deleteUploadedFile()" class="list-delete ui-button-info invite_btn p-button p-component p-button-icon-only">
+            <i class="fa fa-close"></i>
+        </button>
+
+    </div>
+</div>

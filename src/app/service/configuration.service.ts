@@ -55,7 +55,7 @@ export class ConfigurationService {
 	}
 
 	get authorityUrl() {
-		return this.configuration.authority;
+		return "http://localhost:1478/";
 	}
 
 	get googleSiteKey() {

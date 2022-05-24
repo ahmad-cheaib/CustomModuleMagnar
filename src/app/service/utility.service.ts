@@ -3,6 +3,7 @@ import { throwError, Observable, never, Subject, BehaviorSubject } from 'rxjs';
 import { FormGroup, FormControl, AbstractControl } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
 import { TranslateService } from '@ngx-translate/core';
+import { NotificationService } from '../service/notification.service';
 import { HttpClient } from '@angular/common/http';
 import { catchError, take, takeWhile, tap } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
@@ -10,11 +11,11 @@ import { Router } from '@angular/router';
 import * as moment_ from 'moment';
 const moment = moment_;
 import { DatePipe } from '@angular/common';
+import { LoaderService } from '../service/loader.service';
 import { Location } from '@angular/common';
 import { Inject } from "@angular/core";
 import { DOCUMENT } from "@angular/common";
 import { GlobalVariables } from '../models/GlobalVariables';
-import { LoaderService } from './loader.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -32,23 +33,31 @@ export class UtilityService {
 	constructor(
 		private datePipe: DatePipe,
 		private _Router: Router,
+		public _translateService: TranslateService,
+		public _notificationService: NotificationService,
 		private http: HttpClient,
 		private laoderService: LoaderService,
 		private location: Location,
 		@Inject(DOCUMENT) private document: Document) { }
 
 	handleErrorPromise = (error: any): Observable<any> => {
-		
-		if (error.status !== null && error.status === 406) {
+		if (error.status !== null && error.status === 401) {
+			this._notificationService.error(this._translateService.instant('Unauthorized'));
+			return throwError('Unauthorized');
+		}
+		else if (error.status !== null && error.status === 406) {
 			if (error.error) {
+				this._notificationService.warning(this._translateService.instant(error.error));
 				return throwError(error.error);
 			}
 			else {
+				this._notificationService.warning(error.statusText);
 				return throwError(error.statusText);
 			}
 		}
 		else if (error.error !== null && error.error.text) {
 			const errorText = (typeof error.error.text) === 'string' ? error.error.text : error.statusText;
+			this._notificationService.error(errorText);
 			return throwError(errorText);
 		}
 		else if (error.error) {
@@ -59,12 +68,13 @@ export class UtilityService {
 			}
 			let errorMessageTranslated = '';
 			if ((typeof myError) === 'string') {
-				errorMessageTranslated = myError;
+				errorMessageTranslated = this._translateService.instant(myError);
 			}
 			if (errorMessageTranslated === myError) {
 				// not translated
-				errorMessageTranslated = 'GenericErrorMessage';
+				errorMessageTranslated = this._translateService.instant('GenericErrorMessage');
 			}
+			this._notificationService.error(`${errorMessageTranslated}${splitter.length > 1 ? splitter[1] : ''}`);
 			return throwError(myError);
 		} else {
 			try {
@@ -144,7 +154,7 @@ export class UtilityService {
 		return months;
 	}
 	getMonthID(id: string) {
-		return this.monthName + id;
+		return this._translateService.instant(this.monthName + id);
 	}
 	checkIfNew(data, Id) {
 		if (Id === '0' || Id === '+' || Id === data[data.length - 1].id) {
@@ -170,56 +180,68 @@ export class UtilityService {
 	}
 
 	afterDelete() {
-		'Success';
+		this._notificationService.success(this._translateService.instant('RecordDeleteSucess'),
+			this._translateService.instant('Success'));
 
 	}
 	afterDeleteFailure() {
-		'Error'
+		this._notificationService.error(this._translateService.instant('RecordNotDelete'),
+			this._translateService.instant('Error'));
 
 	}
 	showError(error: string) {
 		if (error) {
 			if (error === 'CodeCheckerMessage') {
-					'Error';
+				this._notificationService.error(this._translateService.instant('common.CodeCheckerMessage'),
+					this._translateService.instant('common.Error'));
 			}
 			else {
-				'Error'
+				this._notificationService.error(this._translateService.instant(error),
+					this._translateService.instant('common.Error'));
 			}
 		}
 		else {
-			'Error'
+			this._notificationService.error(this._translateService.instant('common.CommonErrorMessage'),
+				this._translateService.instant('common.Error'));
 		}
 
 	}
 	showSuccess() {
-		'success'
+		this._notificationService.success(this._translateService.instant('common.SaveDonesuccess'),
+			this._translateService.instant('common.Success'));
 	}
-
+	showElementError(element: string) {
+		this._notificationService.error(`${this._translateService.instant('common.ElementUsedError')} ${element}`,
+			this._translateService.instant('common.Error'));
+	}
 	showCommonError() {
-		'success'
+		this._notificationService.error(this._translateService.instant('common.CommonErrorMessage'),
+			this._translateService.instant('common.Error'));
 	}
 	showErrorMessage(error: string) {
-		'Error'
+		this._notificationService.error(this._translateService.instant('common.CommonErrorMessage') + error,
+			this._translateService.instant('common.Error'));
 	}
 	onShowReport() {
 		this.isReport = true;
 	}
-	onHideReport() {
-		this.isReport = false;
+	
+
+	displaySuccessMessage(message, type) {
+		this._notificationService.success(this._translateService.instant(message),
+			this._translateService.instant(type));
 	}
 
-
-	uploadMasterData = (url: string, data: any, companyId: number, organizationId: number) => {
-		return this.http
-			.post(url + `/UploadMasterData?companyId=${companyId}&organizationId=${organizationId}`,
-				JSON.stringify(data))
-			.pipe(catchError(this.handleErrorPromise));
-
+	displayErrorMessage(message, type) {
+		this._notificationService.error(this._translateService.instant(message),
+			this._translateService.instant(type));
 	}
-
-
+	displayErrorTextMessage(message, type) {
+		this._notificationService.error(message,
+			this._translateService.instant(type));
+	}
 	translate(value) {
-		return (value);
+		return this._translateService.instant(value);
 	}
 
 	public updateYears(years: any[]) {
@@ -308,9 +330,16 @@ export class UtilityService {
 		this.location.back();
 	}
 
-	
 
-	
+	changeLang(lang: string) {
+		let htmlTag = this.document.getElementsByTagName("html")[0] as HTMLHtmlElement;
+		htmlTag.dir = lang === "ar" ? "rtl" : "ltr";
+		this._translateService.setDefaultLang(lang);
+		this._translateService.use(lang);
+		localStorage.setItem('currentLanguage', lang);
+		this.changeCssFile(lang);
+
+	}
 
 	changeCssFile(lang: string) {
 		let headTag = this.document.getElementsByTagName(
@@ -367,4 +396,6 @@ export class UtilityService {
 			headTag.appendChild(newLink);
 		}
 	}
+	
+
 }

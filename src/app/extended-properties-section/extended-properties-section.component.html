@@ -1,0 +1,41 @@
+<div class="form-group col-xs-12" *ngIf="extendedProperties!=null && extendedProperties.length>0">
+    
+<p-panel  [style]='{"padding":"20px 0px 20px 0px"}' header="{{'extendedProperties.ExtendedProperties' | translate}}" [toggleable]="true">
+
+    
+    <div *ngIf="_formGroup" [formGroup]="_formGroup" class="mt-3">
+        <div *ngFor="let rowOrder of rows" class="row">
+            <ng-container *ngFor="let extendedProperty of getRowExtendedProperties(rowOrder)">
+                <div class="extendedProperty form-group col-xs-12 {{extendedProperty.cssClass}}">
+                    <label class="extendedPropertyLabel">
+                        {{extendedProperty.title}}
+                    </label>
+    
+                    <div class="extendedPropertyValueSelector">
+                       
+                        <app-extended-property-valueSelector [parentFormGroup]="_formGroup" [formControlName]="extendedProperty.name"
+                            [valueSelectorType]="extendedProperty.valueSelectorType"
+                            [configuration]="extendedProperty.valueSelectorConfiguration"></app-extended-property-valueSelector>
+                       
+                           
+                    </div>
+    
+                </div>
+            </ng-container>
+        </div>
+    </div>
+   
+</p-panel> 
+
+
+</div>
+
+
+<!--
+<pre>
+
+
+{{_formGroup.value|json}}
+</pre>
+
+-->

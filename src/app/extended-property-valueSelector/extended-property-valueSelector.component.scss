@@ -1,0 +1,9 @@
+textarea, input,.dropdownValueSelector{
+    width:100%
+}
+
+::ng-deep{
+    .p-calendar .p-datepicker {
+        min-width: 50%!important;
+    }
+}

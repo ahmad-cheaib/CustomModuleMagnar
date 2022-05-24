@@ -1,0 +1,142 @@
+<section class='content registration-form workflow-new'>
+    <div class='row'>
+        <div class='col-md-12'>
+            <div class="">
+                <div class="add-title">
+                    <label style="width: 100%;">{{'Workflow.Details' | translate }}</label>
+                </div>
+
+
+                <div class="box-body">
+                    <div class="form-group col-xs-12 col-sm-12 actionTable Self-Appraisal-Table">
+                        <div class="nav-tabs-custom">
+                            <ul class="yappraissal nav nav-tabs leavesearchbtn-tab" id="myTab" role="tablist">
+                                <li class="applybtn fa-pull-left ytem nav-item " role="presentation">
+                                    <a class="nav-link active" id="level-tab" data-bs-toggle="tab" href="#level"
+                                        role="tab" aria-controls="level" aria-selected="true">{{'Workflow.Levels' |
+                                        translate}}</a>
+                                </li>
+                                <li class="applybtn fa-pull-left ytem nav-item " role="presentation">
+                                    <a class="nav-link" id="history-tab" data-bs-toggle="tab" href="#history" role="tab"
+                                        aria-controls="history" aria-selected="false">{{'Workflow.History' |
+                                        translate}}</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content" id="myTabContent">
+                                <div class="tab-pane show active" id="level" role="tabpanel"
+                                    aria-labelledby="level-tab">
+                                    <p-table responsiveLayout="scroll"   #dt class="mg-whiteTable ui-datatable" [value]='activities'
+                                        [responsive]='true' [rows]='20' [loading]="loading">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th class="responsivetable" >{{'ExpenseRequest.Level' | translate}}</th>
+                                                <th class="responsivetable" >{{'ApproverName' | translate}}</th>
+                                                <th class="responsivetable" >{{'ExpenseRequest.Username' | translate}}</th>
+                                                <th class="responsivetable" >{{'ExpenseRequest.Status' | translate}}</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-rowData let-index='rowIndex'>
+                                            <tr [pSelectableRow]="rowData">
+                                                <td>
+                                                    {{rowData.LevelOrder}}
+                                                </td>
+                                                <td>
+                                                    {{rowData.fullName}}
+                                                </td>
+                                                <td>
+                                                    {{rowData.Assignee}}
+                                                </td>
+                                                <td>
+                                                    {{statusList[rowData.Status] | translate}}
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td [attr.colspan]="5">
+                                                    {{'common.NoRecordsFound'| translate}}
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                                <div class="tab-pane fade" id="history" role="tabpanel" aria-labelledby="history-tab">
+                                    <p-table responsiveLayout="scroll"   #dt class="mg-whiteTable ui-datatable" [value]='tasks' [responsive]='true'
+                                        [rows]='20' [loading]="loading">
+                                        <ng-template pTemplate="header">
+                                            <tr>
+                                                <th class="responsivetable" >{{'ApproverName' | translate}}</th>
+                                                <th class="responsivetable" >{{'ExpenseRequest.Username' | translate}}</th>
+                                                <th class="responsivetable" >{{'ExpenseRequest.Status' | translate}}</th>
+                                                <th class="responsivetable" >{{'ExpenseRequest.Comment' | translate}}</th>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="body" let-rowData let-index='rowIndex'>
+                                            <tr [pSelectableRow]="rowData">
+
+                                                <td>
+                                                    {{rowData.approverName}}
+                                                </td>
+                                                <td>
+                                                    {{rowData.assignee}}
+                                                </td>
+                                                <td>
+                                                    {{statusList[rowData.status] | translate}}
+                                                </td>
+                                                <td >
+
+                                                    <!-- <p-button (click)="showBasicDialog1(rowData.comment)"  icon="pi pi-external-link" label="Show"></p-button> -->
+                                                    <div style="padding-left: 25px;" (click)="showBasicDialog1(rowData.comment)">
+                                                        <img src="assets/images/Group2438.png" style="cursor: pointer;">
+                                                    </div>
+
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                        <ng-template pTemplate="emptymessage">
+                                            <tr>
+                                                <td [attr.colspan]="5">
+                                                    {{'common.NoRecordsFound'| translate}}
+                                                </td>
+                                            </tr>
+                                        </ng-template>
+                                    </p-table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal fade text-left" [id]="'commentsDialog'+uniqueId" tabindex="-1" role="dialog"
+    aria-labelledby="myModalLabel33" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content" style="width: 100% !important;">
+            <div class="m-3">
+                <form novalidate="" class="" ng-reflect-form="[object Object]">
+                    <div>
+                        <div>
+                            <p-editor [readonly]="true"  name='Comment' id="showComment" type='text'  
+                                 [style]="{'height':'220px','width':'100%','border':'none', 'background':'#EDEDED'}" multiple="true" rows="5" [(ngModel)]='cmnt'>
+                                <p-header hidden id="showComment" >
+                                    <span class="ql-formats"></span>
+                                </p-header>
+                               
+                            </p-editor>
+                            <div class="d-flex justify-content-end mt-3">
+                                <button type="button" class="login100-form-btn" data-bs-dismiss="modal"> {{'common.Ok' |
+                                    translate}}</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<a href data-bs-toggle="modal" [attr.data-bs-target]="'#commentsDialog'+uniqueId" hidden #commentsDialog></a>

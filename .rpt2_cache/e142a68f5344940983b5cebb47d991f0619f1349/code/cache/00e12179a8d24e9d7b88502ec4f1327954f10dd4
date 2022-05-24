@@ -1,0 +1,1 @@
+{"code":"export class Login {\r\n    constructor() { }\r\n}\r\n//# sourceMappingURL=login.js.map","map":{"version":3,"file":"login.js","sourceRoot":"","sources":["../../src/app/models/login.ts"],"names":[],"mappings":"AAAA,MAAM,OAAO,KAAK;IAKjB,gBAAe,CAAC;CAChB"}}

@@ -18,6 +18,8 @@ import { CommonMessages } from '../helpers/common.messages';
 import { notificationTypeEnums } from '../helpers/enum.helper';
 import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import { FileUploaderButtonComponent } from '../helpers/file-uploader-button/file-uploader-button.component';
+import { NotificationService } from '../service/notification.service';
 
 
 @Component({
@@ -49,7 +51,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 	WFValidation: string = "";
 	isHourDisabled = true;
 	private isAnnual = false;
-	// @ViewChild('fileUploader') fileUploader: FileUploaderButtonComponent;
+	@ViewChild('fileUploader') fileUploader: FileUploaderButtonComponent;
 	// @ViewChild('chosenLeave') chosenLeave: ElementRef;
 	createdDate: Date;
 	id: number;
@@ -78,7 +80,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 	// })
 	myGroup = new FormGroup({
-		
+
 		fromDate: new FormControl(),
 		toDate: new FormControl()
 
@@ -89,7 +91,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 
 	constructor(
-		private translateService: TranslateService,
+		private translate: TranslateService,
 		private _Router: Router,
 		protected datePipe: DatePipe,
 		private _LoaderService: LoaderService,
@@ -101,38 +103,29 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 		protected _WorkflowtemplateService: WorkflowtemplateService,
 		private permissionManagerService: PermissionManagerService,
 		private _LeaveTransactionsService: LeaveTransactionsService,
-		private formBuilder: FormBuilder
+		private _NotificationService : NotificationService
 	) {
-		translateService.setDefaultLang('en');
-		const browserLang = translateService.getBrowserLang();
-		const defaultLang = browserLang.match(/en|es|tr|ar/) ? browserLang : 'en';
 
-		let language = localStorage.getItem('currentLanguage');
-		if (language == null) {
-			language = defaultLang;
-		}
-
-		translateService.use(language);
-
-
-    	console.log(language);
 
 		super(datePipe, _LeaveRequestService, _ConfigurationService, _EmployeeLookupService,
 			_WorkflowtemplateService);
+
+		translate.setDefaultLang('en');
+		translate.use('en');
 	}
 
 	ngOnInit() {
-	
+
 
 		this.myGroup.get("fromDate").valueChanges.subscribe(selectedValue => {
 			this.leaveRequest.fromDate = selectedValue;
 			this.getWorkingDays();
-		  })
+		})
 
-		  this.myGroup.get("toDate").valueChanges.subscribe(selectedValue => {
+		this.myGroup.get("toDate").valueChanges.subscribe(selectedValue => {
 			this.leaveRequest.toDate = selectedValue;
 			this.getWorkingDays();
-		  })
+		})
 
 
 
@@ -147,7 +140,11 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 			.pipe(
 				takeWhile(() => !this.isDestroyed),
 				tap((params: Params) => {
-					this.id = Number(params['id']);
+
+					const result = this._Router.routerState.snapshot.url.split('/').pop();
+					if (parseInt(result)){
+						this.id = Number(result);
+					}
 					this.getDateFormat();
 					this.extendedProperties = {};
 
@@ -173,7 +170,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 	}
 
-	
+
 
 	getLeaveRequest(id) {
 		return this._LeaveRequestService.getById(id).pipe(
@@ -206,6 +203,10 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 				this.isAnnual = currentLeave.isAnnual;
 
 				this.extendedProperties = !!res.extendedProperties ? JSON.parse(res.extendedProperties) : {};
+
+				this.myGroup.get("fromDate").setValue(this.leaveRequest.fromDate);
+				this.myGroup.get("toDate").setValue(this.leaveRequest.toDate);
+
 
 			})
 		)
@@ -274,7 +275,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 				//	this.leaveRequest.hours = 8;
 				const day = new Date(this.leaveRequest.fromDate).getDay() + 1;
 				const hours = 0;
-				
+
 				this._LeaveTransactionsService.getWorkingHours(this.employeeId, day, hours)
 					.pipe(finalize(() => this._LoaderService.displayLoader(false)))
 					.subscribe(response => {
@@ -310,7 +311,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 		return formData;
 	}
 	onSaveChanges() {
-		
+
 
 		if (this.checkRow()) {
 
@@ -321,11 +322,11 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 			payload.extendedProperties = JSON.stringify(this.extendedProperties);
 
-			// if (this.fileUploader.fileGuid) {
-			// 	payload.fileGuid = this.fileUploader.fileGuid;
-			// 	payload.fileName = this.fileUploader.fileName;
-			// 	payload.attachmentType = this.fileUploader.fileType;
-			// }
+			if (this.fileUploader.fileGuid) {
+				payload.fileGuid = this.fileUploader.fileGuid;
+				payload.fileName = this.fileUploader.fileName;
+				payload.attachmentType = this.fileUploader.fileType;
+			}
 
 			this.saveLeaveRequest(payload);
 		}
@@ -481,7 +482,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 	getWorkingDays() {
 
-		
+
 
 		if (!isNullOrUndefined(this.leaveRequest.fromDate) && !isNullOrUndefined(this.leaveRequest.toDate)) {
 			if (this.leaveRequest.fromDate > this.leaveRequest.toDate) {
@@ -624,7 +625,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 	}
 	saveLeaveRequest(leavepayload) {
 
-		// if (this.fileUploader.uploadedLock == false) {
+		if (this.fileUploader.uploadedLock == false) {
 
 
 		this.loading = true;
@@ -663,10 +664,10 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 							this.isLoading = false;
 							if (isNullOrUndefined(error.error)) {
-								//	this._UtilityService.showErrorMessage(this._UtilityService.translate('GenericErrorMessage'));
+								this._UtilityService.showErrorMessage(this._UtilityService.translate('GenericErrorMessage'));
 							}
 							else {
-								//	this._UtilityService.showError(this._UtilityService.translate(error.error));
+								this._UtilityService.showError(this._UtilityService.translate(error.error));
 							}
 						}
 					)
@@ -694,7 +695,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 						this.selectedId = undefined;
 						this.isLoading = false;
 						this._UtilityService.showSuccess();
-						
+
 
 						this.showHideLeaveRequestForm(false);
 					},
@@ -702,22 +703,28 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 							this._LoaderService.displayLoader(false);
 
 							this.isLoading = false;
-							if (isNullOrUndefined(error.error)) {
-								//this._UtilityService.showErrorMessage(this._UtilityService.translate('GenericErrorMessage'));
-							}
-							else {
-								//this._UtilityService.showError(this._UtilityService.translate(error.error));
-							}
+
+							// this._UtilityService.showError(this._UtilityService.translate(error.error));
+
+							this._NotificationService.warning(this._UtilityService.translate(error.error));
+
+
+							// if (isNullOrUndefined(error.error)) {
+							// 	this._UtilityService.showErrorMessage(this._UtilityService.translate('error'));
+							// }
+							// else {
+							// 	this._UtilityService.showError(this._UtilityService.translate(error.error));
+							// }
 						}
 					)
 				).subscribe();
 		}
-		// }
-		// else {
-		// 	this.isLoading = false;
-		// 	this._NotificationService.warning(this._UtilityService.translate("TheFilesHaven'tBeenUploadedYet"));
-		// }
+		}
+		else {
+			this.isLoading = false;
+			this._NotificationService.warning(this._UtilityService.translate("TheFilesHaven'tBeenUploadedYet"));
+		}
 	}
 
-	
+
 }
