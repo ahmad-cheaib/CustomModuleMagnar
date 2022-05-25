@@ -1,0 +1,39 @@
+<div class="modal fade text-left" data-bs-backdrop="static" data-bs-keyboard="false" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel33"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-content">
+            <div>
+                <!-- <img data-bs-dismiss="modal"
+                    src="assets/images/Group1462.svg" class="btn-close" (click)='closeModal()'
+                    style="width: 20px; border-radius: 50%;"> -->
+                <form novalidate="" class="login100-form validate-form p-b-33 p-t-5 ng-untouched ng-pristine ng-invalid"
+                    ng-reflect-form="[object Object]">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="card-title">
+                                <div class="logo logoheader select-company">{{'' | translate}}</div>
+                            </h4>
+                        </div>
+                        <div class="card-body card-body-select">
+                            <p class='popupTextColor'>{{messagekey | translate }}</p>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="container-login100-form-btn m-t-32 marg-top-15">
+
+                                        <button type='button' class='login100-form-btn' *ngIf="showDelete"
+                                            (click)='onConfirm.emit()'>{{confirmKey |
+                                            translate }}</button>
+                                        <button type='button' class='lgbtoleft login100-form-btn' data-dismiss='modal' (click)='closeModal();onAbort.emit()'
+                                            >{{'plugin.cancel' |
+                                            translate }}</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<a href data-bs-toggle="modal" data-bs-target="#confirm-delete" hidden #confirmDeleteButton></a>

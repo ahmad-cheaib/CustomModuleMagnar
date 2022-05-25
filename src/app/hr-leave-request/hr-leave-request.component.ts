@@ -398,6 +398,6 @@ export class HrLeaveRequestComponent extends LeaveBaseComponent implements OnIni
 	
 
 	onAdd(){
-		this._Router.navigate(['create'], {relativeTo: this._ActivatedRoute.parent});
+		this._Router.navigate([`/${this.organizationId}/${this.companyId}/hr/leave-create`]);
 	}
 }

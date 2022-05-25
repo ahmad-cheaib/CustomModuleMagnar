@@ -43,6 +43,7 @@ import { LeaveService } from './service/leave.service';
 import { LeaveRequestService } from './service/leaveRequest.service';
 import { PermissionManagerService } from './service/permissionmanager.service';
 import { LeaveTransactionsService } from './service/leaveTransactions.service';
+import { ConfirmationComponent } from './helpers/confirmation/confirmation.component';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -57,6 +58,7 @@ export function createTranslateLoader(http: HttpClient) {
     ExtendedPropertiesSectionComponent,
     ExtendedPropertyValueSelectorComponent,
     WorkflowHistoryComponent,
+    ConfirmationComponent,
     HrLeaveRequestComponent
   ],
   imports: [
