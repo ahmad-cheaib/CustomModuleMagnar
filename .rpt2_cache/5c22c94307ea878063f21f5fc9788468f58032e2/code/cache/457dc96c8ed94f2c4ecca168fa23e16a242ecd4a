@@ -1,0 +1,1 @@
+{"code":"import { SecurableObject } from \"./SecurableObject\";\r\nexport class Department extends SecurableObject {\r\n}\r\n//# sourceMappingURL=department.js.map","map":{"version":3,"file":"department.js","sourceRoot":"","sources":["../../src/app/models/department.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,eAAe,EAAE,MAAM,mBAAmB,CAAC;AAEpD,MAAM,OAAO,UAAY,SAAS,eAAe;CAUhD"}}
