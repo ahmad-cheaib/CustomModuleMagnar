@@ -22,6 +22,7 @@ import { FileUploaderButtonComponent } from '../helpers/file-uploader-button/fil
 import { NotificationService } from '../service/notification.service';
 import { EmployeesService } from '../service/employees.service';
 import { ThrowStmt } from '@angular/compiler';
+import { PositionService } from '../service/position.service';
 
 
 @Component({
@@ -63,24 +64,8 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 	extendedProperties: any = {};
 	leaveId: number;
 	requestForm: FormGroup;
-	//   myGroup: FormGroup;
 	formLeaveId: string;
 
-	// myGroup = new FormGroup({
-	// 	leaveId: new FormControl(),
-	// 	fromDate: new FormControl(),
-	// 	toDate: new FormControl(),
-
-	// 	offCycle: new FormControl(),
-
-	// 	remarks: new FormControl(),
-
-	// 	status: new FormControl(),
-	// 	daysCount: new FormControl(),
-	// 	hours: new FormControl(),
-	// 	submissionDate: new FormControl()
-
-	// })
 	myGroup = new FormGroup({
 
 		fromDate: new FormControl(),
@@ -89,11 +74,19 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 	})
 	activeEmployees: any;
 
+	data: any[] = [];
+	dataLoaded: boolean;
+	maxChildrenNum: number = 0;
+	mainRootId: number = 0;
+	mainRoot: any;
+	finalEmpList: any[] = [];
+
 
 
 
 
 	constructor(
+		private _PositionService: PositionService,
 		private translate: TranslateService,
 		private _Router: Router,
 		protected datePipe: DatePipe,
@@ -106,8 +99,8 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 		protected _WorkflowtemplateService: WorkflowtemplateService,
 		private permissionManagerService: PermissionManagerService,
 		private _LeaveTransactionsService: LeaveTransactionsService,
-		private _NotificationService : NotificationService,
-		private _EmployeesService : EmployeesService
+		private _NotificationService: NotificationService,
+		private _EmployeesService: EmployeesService
 	) {
 
 
@@ -120,7 +113,8 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 	ngOnInit() {
 
-		this.getActiveEmployees();
+		// this.getActiveEmployees();
+		this.getPositions();
 
 		this.myGroup.get("fromDate").valueChanges.subscribe(selectedValue => {
 			this.leaveRequest.fromDate = selectedValue;
@@ -136,7 +130,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 		this.loading = true;
 		this._LoaderService.displayLoader(true);
-		
+
 
 		this._ActivatedRoute.params
 			.pipe(
@@ -144,7 +138,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 				tap((params: Params) => {
 
 					const result = this._Router.routerState.snapshot.url.split('/').pop();
-					if (parseInt(result)){
+					if (parseInt(result)) {
 						this.id = Number(result);
 					}
 					this.getDateFormat();
@@ -365,7 +359,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 	showHideLeaveRequestForm(isSave: boolean) {
 		if (isSave === false) {
-			this._Router.navigate([`/1/1/hr/Leave-List`]);
+			this._Router.navigate([`/1/1/hr/Leave-Request`]);
 			// this._UtilityService.goBack();
 		}
 
@@ -630,97 +624,97 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 		if (this.fileUploader.uploadedLock == false) {
 
 
-		this.loading = true;
-		this.isLoading = true;
+			this.loading = true;
+			this.isLoading = true;
 
-		if (leavepayload.fileName == null) {
-			leavepayload.fileGuid = '';
-			leavepayload.fileName = '';
-			leavepayload.attachmentType = '';
-		}
+			if (leavepayload.fileName == null) {
+				leavepayload.fileGuid = '';
+				leavepayload.fileName = '';
+				leavepayload.attachmentType = '';
+			}
 
-		if (!isNullOrUndefined(leavepayload.id) && leavepayload.id !== 0) {
-			this._LoaderService.displayLoader(true);
-			leavepayload.FileAttachment = leavepayload.attachmentData;
+			if (!isNullOrUndefined(leavepayload.id) && leavepayload.id !== 0) {
+				this._LoaderService.displayLoader(true);
+				leavepayload.FileAttachment = leavepayload.attachmentData;
 
-			const form: FormData = this.getFormData(leavepayload);
+				const form: FormData = this.getFormData(leavepayload);
 
-			this._LeaveRequestService.updateLeaveRequest(form)
-				.pipe(
-					takeWhile(() => !this.isDestroyed),
-					finalize(() => {
-						this.loading = false;
-						this.isLoading = false;
-						this._LoaderService.displayLoader(false);
-
-					}),
-					filter(response => response !== null && response !== undefined),
-					tap(() => {
-						this.selectedId = undefined;
-						this.showHideLeaveRequestForm(false);
-						this.isLoading = false;
-						this._UtilityService.showSuccess();
-					},
-						error => {
+				this._LeaveRequestService.updateLeaveRequest(form)
+					.pipe(
+						takeWhile(() => !this.isDestroyed),
+						finalize(() => {
+							this.loading = false;
+							this.isLoading = false;
 							this._LoaderService.displayLoader(false);
 
+						}),
+						filter(response => response !== null && response !== undefined),
+						tap(() => {
+							this.selectedId = undefined;
+							this.showHideLeaveRequestForm(false);
 							this.isLoading = false;
-							if (isNullOrUndefined(error.error)) {
-								this._UtilityService.showErrorMessage(this._UtilityService.translate('GenericErrorMessage'));
+							this._UtilityService.showSuccess();
+						},
+							error => {
+								this._LoaderService.displayLoader(false);
+
+								this.isLoading = false;
+								if (isNullOrUndefined(error.error)) {
+									this._UtilityService.showErrorMessage(this._UtilityService.translate('GenericErrorMessage'));
+								}
+								else {
+									this._UtilityService.showError(this._UtilityService.translate(error.error));
+								}
 							}
-							else {
-								this._UtilityService.showError(this._UtilityService.translate(error.error));
-							}
-						}
-					)
-				).subscribe();
-		}
-		else {
-			leavepayload.id = 0;
+						)
+					).subscribe();
+			}
+			else {
+				leavepayload.id = 0;
 
-			leavepayload.FileAttachment = leavepayload.attachmentData;
-			const form: FormData = this.getFormData(leavepayload);
+				leavepayload.FileAttachment = leavepayload.attachmentData;
+				const form: FormData = this.getFormData(leavepayload);
 
-			this._LoaderService.displayLoader(true);
+				this._LoaderService.displayLoader(true);
 
 
-			this._LeaveRequestService.insertLeaveRequest(form)
-				.pipe(
-					takeWhile(() => !this.isDestroyed),
-					finalize(() => {
-						this.loading = false;
-						this.isLoading = false;
-						this._LoaderService.displayLoader(false);
-					}),
-					filter(response => response !== null && response !== undefined),
-					tap(() => {
-						this.selectedId = undefined;
-						this.isLoading = false;
-						this._UtilityService.showSuccess();
-
-
-						this.showHideLeaveRequestForm(false);
-					},
-						error => {
+				this._LeaveRequestService.insertLeaveRequest(form)
+					.pipe(
+						takeWhile(() => !this.isDestroyed),
+						finalize(() => {
+							this.loading = false;
+							this.isLoading = false;
 							this._LoaderService.displayLoader(false);
-
+						}),
+						filter(response => response !== null && response !== undefined),
+						tap(() => {
+							this.selectedId = undefined;
 							this.isLoading = false;
-
-							// this._UtilityService.showError(this._UtilityService.translate(error.error));
-
-							this._NotificationService.warning(this._UtilityService.translate(error.error));
+							this._UtilityService.showSuccess();
 
 
-							// if (isNullOrUndefined(error.error)) {
-							// 	this._UtilityService.showErrorMessage(this._UtilityService.translate('error'));
-							// }
-							// else {
-							// 	this._UtilityService.showError(this._UtilityService.translate(error.error));
-							// }
-						}
-					)
-				).subscribe();
-		}
+							this.showHideLeaveRequestForm(false);
+						},
+							error => {
+								this._LoaderService.displayLoader(false);
+
+								this.isLoading = false;
+
+								// this._UtilityService.showError(this._UtilityService.translate(error.error));
+
+								this._NotificationService.warning(this._UtilityService.translate(error.error));
+
+
+								// if (isNullOrUndefined(error.error)) {
+								// 	this._UtilityService.showErrorMessage(this._UtilityService.translate('error'));
+								// }
+								// else {
+								// 	this._UtilityService.showError(this._UtilityService.translate(error.error));
+								// }
+							}
+						)
+					).subscribe();
+			}
 		}
 		else {
 			this.isLoading = false;
@@ -729,30 +723,150 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 	}
 
 
-	
-	getActiveEmployees() {
-		this._EmployeesService
-			.getActiveEmployees(this.companyId)
-			.pipe(
-				filter(response => response !== null && response !== undefined),
-				tap(response => {
-					this.activeEmployees = response;
-					this.activeEmployees.map( e=> {
-						e.label = e.firstName + " " + (e.middleName ? e.middleName : "") + " " + e.lastName;
-						return e;
-					})
-				
-				})
-			)
-			.subscribe();
-	}
+
+	// getActiveEmployees() {
+	// 	this._EmployeesService
+	// 		.getActiveEmployees(this.companyId)
+	// 		.pipe(
+	// 			filter(response => response !== null && response !== undefined),
+	// 			tap(response => {
+	// 				this.activeEmployees = response;
+	// 				this.activeEmployees.map( e=> {
+	// 					e.label = e.firstName + " " + (e.middleName ? e.middleName : "") + " " + e.lastName;
+	// 					return e;
+	// 				})
+
+	// 			})
+	// 		)
+	// 		.subscribe();
+	// }
 
 
 	onSelectEmployee(employee) {
 		console.log(employee);
-		this.employeeId = employee.id;
+		this.employeeId = employee.employeeId;
 		this.leaveRequest.employeeId = this.employeeId;
 	}
 
 
+
+
+
+	getPositions() {
+
+		this._PositionService.GetPositionsAssignmentsChartByCompanyId(this.companyId)
+			.pipe(
+				takeWhile(() => !this.isDestroyed),
+				finalize(() => {
+					this._LoaderService.displayLoader(false);
+				}),
+				tap(response => {
+					this.generatePrimeTree(response);
+
+
+					const multipleRoots = this.data.filter(d => d.parentId === null || d.parentId === undefined || d.parentId === 0)
+
+					if (multipleRoots.length > 1) {
+						for (let i = 0; i < multipleRoots.length; i++) {
+							if (multipleRoots[i].children && multipleRoots[i].children.length > this.maxChildrenNum) {
+								this.maxChildrenNum = multipleRoots[i].children.length;
+								this.mainRootId = multipleRoots[i].id;
+								this.mainRoot = multipleRoots[i];
+							}
+						}
+						this.data = this.data.filter(d => d.parentId !== undefined && d.parentId !== 0);
+						this.data.unshift(this.mainRoot);
+					}
+
+					this.dataLoaded = true;
+					this.getAllEmployees();
+				})
+			).subscribe();
+
+	}
+	generatePrimeTree(flatTree: any[]): any[] {
+		let result: any[] = [];
+
+		let roots = flatTree.filter(item => item.reportingTo == null || item.reportingTo == 0);
+
+		roots.forEach(r => {
+			result.push(
+				{
+					id: r.id,
+					name: r.fullName,
+					positionName: r.title,
+					parentId: r.reportingTo,
+					username: r.employeeUsername,
+					employeeId: r.employeeId
+				}
+			);
+		});
+
+		this.data.push(...result);
+
+		result.forEach(node => {
+			this.buildChildren(node, flatTree);
+		});
+
+		return result;
+	}
+	buildChildren(node: any, flatTree: any[]) {
+
+		let children = [];
+		let flatChildren = flatTree.filter(item => (item.reportingTo != null && item.reportingTo != 0) && item.reportingTo == node.id);
+		flatChildren.forEach(r => {
+			children.push(
+				{
+					id: r.id,
+					name: r.fullName,
+					positionName: r.title,
+					parentId: r.reportingTo,
+					username: r.employeeUsername,
+					employeeId: r.employeeId
+				}
+			);
+		});
+
+		this.data.push(...children);
+		if (children.length != 0) {
+			node.children = children;
+			node.children.forEach(c => {
+				this.buildChildren(c, flatTree);
+			});
+		}
+		else {
+			node.leaf = true;
+		}
+	}
+
+	getAllEmployees() {
+		const username = localStorage.getItem('userName');
+		let list = this.data;
+		let emp = list.find(p => p.username === username);
+		this.finalEmpList.push({
+			name: emp.name,
+			positionName: emp.positionName,
+			username: emp.username,
+			employeeId: emp.employeeId
+		});
+		this.getSubEmployees(emp);
+		this.finalEmpList = this.finalEmpList.filter(l => l.employeeId !== undefined)
+
+	}
+
+
+	getSubEmployees(emp){
+		if(emp.children){
+			emp.children.forEach(c => {
+				this.finalEmpList.push({
+					name: c.name,
+					positionName: c.positionName,
+					username: c.username,
+					employeeId: c.employeeId
+				});
+				this.getSubEmployees(c);
+			});
+
+		}
+	}
 }

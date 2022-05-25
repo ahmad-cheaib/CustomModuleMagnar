@@ -20,11 +20,19 @@
 												for='terminationProcess.employeeId'>{{'processsetup.employee' |
 												translate}}</label>
 
-											<p-dropdown [options]="activeEmployees" placeholder="Select an employee"
+											<!-- <p-dropdown [options]="activeEmployees" placeholder="Select an employee"
 												class="  as-dropdown " [(ngModel)]='selectedEmployee' name='employeeId'
 												showClear="true" optionLabel="label" dataKey="id"
 												(onChange)="onSelectEmployee(selectedEmployee)"
 												filterBy="label,code" filter="true">
+											
+											</p-dropdown> -->
+
+                      <p-dropdown [options]="finalEmpList" placeholder="Select an employee"
+												class="  as-dropdown " [(ngModel)]='selectedEmployee' name='employeeId'
+												showClear="true" optionLabel="name" dataKey="id"
+												(onChange)="onSelectEmployee(selectedEmployee)"
+												filterBy="name" filter="true">
 											
 											</p-dropdown>
 										</div>

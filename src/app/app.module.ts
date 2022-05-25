@@ -38,6 +38,7 @@ import { EmployeesService } from './service/employees.service';
 import { WorkflowtemplateService } from './service/workflow-template.service';
 import { WorkflowTaskService } from './service/workflowTasks.service';
 import { WorkflowHistoryComponent } from './workflow-history/workflow-history.component';
+import { PositionService } from './service/position.service';
 
 
 export function createTranslateLoader(http: HttpClient) {
@@ -101,6 +102,7 @@ export function createTranslateLoader(http: HttpClient) {
     EmployeesService,
     EmployeeLookupService,
     DepartmentService,
+    PositionService,
     ChildrenOutletContexts
   ],
 
