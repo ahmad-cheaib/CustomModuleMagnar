@@ -364,7 +364,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 	showHideLeaveRequestForm(isSave: boolean) {
 		if (isSave === false) {
-			this._Router.navigate([`/1/1/hr/LeaveRequest`]);
+			this._Router.navigate([`/${this.organizationId}/${this.companyId}/hr/LeaveRequest`]);
 			// this._UtilityService.goBack();
 		}
 
