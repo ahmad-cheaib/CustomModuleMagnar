@@ -205,7 +205,12 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 				this.myGroup.get("fromDate").setValue(this.leaveRequest.fromDate);
 				this.myGroup.get("toDate").setValue(this.leaveRequest.toDate);
 				
+				console.log(this.employeeId);
+				console.log(this.finalEmpList);
+				console.log(this.finalEmpList.find(e => e.employeeId === this.employeeId ));
+
 				this.selectedEmployee  = this.finalEmpList.find(e => e.employeeId === this.employeeId );
+				console.log(this.selectedEmployee);
 
 			})
 		)
