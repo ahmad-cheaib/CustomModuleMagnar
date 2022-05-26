@@ -64,6 +64,10 @@
                         <th class="responsivetable" class="first class-id">
                           #
                         </th>
+                        <th class="responsivetable" [pSortableColumn]="'employeeName'" >
+                          {{'common.Name' | translate}}
+                          <p-sortIcon [field]="'employeeName'"></p-sortIcon>
+                        </th>
                         <th class="responsivetable" [pSortableColumn]="'fromDate'" >
                           {{'Period.FromDate' | translate}}
                           <p-sortIcon [field]="'fromDate'"></p-sortIcon>
@@ -101,6 +105,9 @@
                       <tr [pSelectableRow]="rowData" class="old">
                         <td class="first">
                           {{index+1}}
+                    </td>
+                    <td>
+                      {{ rowData.employeeName }}
                     </td>
                     <td>
                       {{ rowData.fromDate | date }}

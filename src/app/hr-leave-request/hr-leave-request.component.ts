@@ -78,8 +78,8 @@ export class HrLeaveRequestComponent extends LeaveBaseComponent implements OnIni
 
 		this.organizationId = '1';
 		this.companyId = 1;
-		this.username = "fsleiman@areeba.com";
-		this.employeeId = `179`;
+		this.username = localStorage.getItem('userName');
+		this.employeeId = localStorage.getItem('employeeId');
 
 		
 		this._ActivatedRoute.params
@@ -301,7 +301,7 @@ export class HrLeaveRequestComponent extends LeaveBaseComponent implements OnIni
 	}
 
 	getLeaveRequests() {
-		this._LeaveRequestService.getLeaveRequests(this.companyId, this.employeeId)
+		this._LeaveRequestService.getLeaveRequestsByUsername(this.companyId)
 			.pipe(
 				takeWhile(() => !this.isDestroyed),
 				finalize(() => {

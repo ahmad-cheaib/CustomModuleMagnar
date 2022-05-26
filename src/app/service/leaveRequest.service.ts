@@ -48,6 +48,12 @@ export class LeaveRequestService {
         .pipe(catchError(this._UtilityService.handleErrorPromise));
     }
   
+    getLeaveRequestsByUsername(companyId: number) {
+      return this._Http
+        .get(`${this.urlLeaveRequestAPI}/GetLeaveRequestsByUsername?companyId=${companyId}`)
+        .pipe(catchError(this._UtilityService.handleErrorPromise));
+    }
+
     getLeaveRequestsForApproval(statusId: string,companyId:number) {
       return this._Http
         .get(`${this.urlLeaveRequestAPI}/GetLeaveRequestsForApproval?status=${statusId}&companyId=${companyId}`)
