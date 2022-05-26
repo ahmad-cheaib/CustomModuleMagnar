@@ -80,6 +80,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 	mainRootId: number = 0;
 	mainRoot: any;
 	finalEmpList: any[] = [];
+	selectedEmployee: any;
 
 
 
@@ -114,7 +115,6 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 	ngOnInit() {
 
 		// this.getActiveEmployees();
-		this.getPositions();
 
 		this.myGroup.get("fromDate").valueChanges.subscribe(selectedValue => {
 			this.leaveRequest.fromDate = selectedValue;
@@ -146,11 +146,11 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 					if (!this.id) {
 
-						concat(this.getLeaves(), this.getWorkflowStatuses()).subscribe();
+						concat(this.getPositions(),this.getLeaves(), this.getWorkflowStatuses()).subscribe();
 						this.initializeLeaveRequest();
 
 					} else {
-						concat(this.getLeaves(), this.getWorkflowStatuses(), this.getLeaveRequest(this.id)).subscribe();
+						concat(this.getPositions(),this.getLeaves(), this.getWorkflowStatuses(), this.getLeaveRequest(this.id)).subscribe();
 					}
 
 				})
@@ -204,6 +204,8 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 				this.myGroup.get("fromDate").setValue(this.leaveRequest.fromDate);
 				this.myGroup.get("toDate").setValue(this.leaveRequest.toDate);
+				
+				this.selectedEmployee  = this.finalEmpList.find(e => e.employeeId === this.employeeId );
 
 			})
 		)
@@ -754,7 +756,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 
 	getPositions() {
 
-		this._PositionService.GetPositionsAssignmentsChartByCompanyId(this.companyId)
+	return	this._PositionService.GetPositionsAssignmentsChartByCompanyId(this.companyId)
 			.pipe(
 				takeWhile(() => !this.isDestroyed),
 				finalize(() => {
@@ -781,7 +783,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 					this.dataLoaded = true;
 					this.getAllEmployees();
 				})
-			).subscribe();
+			)
 
 	}
 	generatePrimeTree(flatTree: any[]): any[] {
