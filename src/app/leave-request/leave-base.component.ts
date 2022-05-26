@@ -10,8 +10,8 @@ import { LeaveRequestService } from "../service/leaveRequest.service";
 export class LeaveBaseComponent implements OnDestroy {
 	employees: any[];
 	companyId: number =1;
-	employeeId: string;
 	organizationId: string ='1';
+	employeeId: string;
 	workflowStatuses: any[];
 	calendarDateFormat: string;
 	leaves: any;
