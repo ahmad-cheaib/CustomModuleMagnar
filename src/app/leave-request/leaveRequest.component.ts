@@ -53,7 +53,7 @@ export class LeaveRequestComponent extends LeaveBaseComponent implements OnInit 
 	IsWFConfigured: boolean = false;
 	WFValidation: string = "";
 	isHourDisabled = true;
-	private isAnnual = false;
+	isAnnual = false;
 	@ViewChild('fileUploader') fileUploader: FileUploaderButtonComponent;
 	// @ViewChild('chosenLeave') chosenLeave: ElementRef;
 	createdDate: Date;
