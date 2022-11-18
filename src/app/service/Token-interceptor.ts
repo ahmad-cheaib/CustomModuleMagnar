@@ -26,7 +26,15 @@ export class TokenInterceptorService  {
 
 	addToken(req: HttpRequest<any>, token: string): HttpRequest<any> {
 
-		return req.clone({ setHeaders: { Authorization: 'Bearer ' + token } })
+		let organizationId = 1;
+		
+		return req.clone({ 
+			setHeaders: 
+			{ 
+				Authorization: 'Bearer ' + token ,
+				OrganizationId: (organizationId).toString()
+			} 
+		})
 
 	}
 
